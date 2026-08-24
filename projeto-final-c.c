@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 void mostrar_menu()
 {
@@ -30,14 +32,23 @@ void mostrar_campeoes()
     printf("==============================================\n");
 }
 
-void escolher_campeao()
+int escolher_campeao()
 {
     int escolha;
 
     mostrar_campeoes();
 
-    printf("\nChoose your champion: ");
-    scanf("%d", &escolha);
+    do
+    {
+        printf("\nChoose your champion: ");
+        scanf("%d", &escolha);
+
+        if (escolha < 1 || escolha > 4)
+        {
+            printf("Invalid champion! Choose a number between 1 and 4.\n");
+        }
+
+    } while (escolha < 1 || escolha > 4);
 
     switch (escolha)
     {
@@ -64,15 +75,138 @@ void escolher_campeao()
             printf("\"Mmm, the taste of coward.\"\n");
             printf("- Nidalee\n");
             break;
+    }
 
-        default:
-            printf("\nInvalid champion!\n");
+    return escolha;
+}
+
+void fight(int campeao)
+{
+    int player_health = 100;
+    int enemy_health = 100;
+    int enemy_champion;
+    int action;
+
+    enemy_champion = rand() % 4 + 1;
+
+    while (enemy_champion == campeao)
+    {
+        enemy_champion = rand() % 4 + 1;
+    }
+
+    printf("\n");
+    printf("==============================================\n");
+    printf("                 BATTLE START                \n");
+    printf("==============================================\n");
+
+    printf("\n");
+
+    printf("Your champion: ");
+
+    switch (campeao)
+    {
+        case 1:
+            printf("Vi\n");
+            break;
+
+        case 2:
+            printf("Jarvan IV\n");
+            break;
+
+        case 3:
+            printf("Lee Sin\n");
+            break;
+
+        case 4:
+            printf("Nidalee\n");
+            break;
+    }
+
+    printf("Enemy champion: ");
+
+    switch (enemy_champion)
+    {
+        case 1:
+            printf("Vi\n");
+            break;
+
+        case 2:
+            printf("Jarvan IV\n");
+            break;
+
+        case 3:
+            printf("Lee Sin\n");
+            break;
+
+        case 4:
+            printf("Nidalee\n");
+            break;
+    }
+
+    printf("\n==============================================\n");
+
+    while (player_health > 0 && enemy_health > 0)
+    {
+        printf("\nYour HP: %d\n", player_health);
+        printf("Enemy HP: %d\n", enemy_health);
+
+        printf("\n");
+        printf("----------------------------------------------\n");
+        printf("[1] Attack\n");
+        printf("[2] Run\n");
+        printf("----------------------------------------------\n");
+
+        printf("Choose an action: ");
+        scanf("%d", &action);
+
+        switch (action)
+        {
+            case 1:
+                enemy_health = enemy_health - 20;
+
+                printf("\nYou attacked the enemy!\n");
+                printf("You dealt 20 damage!\n");
+
+                if (enemy_health <= 0)
+                {
+                    printf("\n==============================================\n");
+                    printf("                  VICTORY!                   \n");
+                    printf("==============================================\n");
+                    printf("You defeated the enemy!\n");
+                    break;
+                }
+
+                player_health = player_health - 15;
+
+                printf("\nThe enemy attacked you!\n");
+                printf("You received 15 damage!\n");
+                break;
+
+            case 2:
+                printf("\nYou ran away from the battle!\n");
+                return;
+
+            default:
+                printf("\nInvalid action!\n");
+                break;
+        }
+    }
+
+    if (player_health <= 0)
+    {
+        printf("\n==============================================\n");
+        printf("                  DEFEAT                     \n");
+        printf("==============================================\n");
+        printf("You were defeated!\n");
     }
 }
 
 int main()
 {
     int escolha;
+    int campeao;
+
+    srand(time(NULL));
 
     do
     {
@@ -84,7 +218,8 @@ int main()
         switch (escolha)
         {
             case 1:
-                escolher_campeao();
+                campeao = escolher_campeao();
+                fight(campeao);
                 break;
 
             case 2:
@@ -97,6 +232,7 @@ int main()
 
             default:
                 printf("\nInvalid option!\n");
+                break;
         }
 
     } while (escolha != 3);
