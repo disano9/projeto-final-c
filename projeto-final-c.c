@@ -106,12 +106,14 @@ void fight(int campeao)
 
     int ability_cooldown;
 
-    /* ========================================= */
     /* SESSÃO 7 - CRÍTICO */
-    /* ========================================= */
-
     int critical_chance;
     int critical_damage;
+
+    /* SESSÃO 8 - EFEITOS ESPECIAIS */
+    int enemy_stunned;
+    int enemy_marked;
+
 
     /* ========================================= */
     /* ESCOLHER INIMIGO */
@@ -135,6 +137,11 @@ void fight(int campeao)
 
     } while (enemy_champion < 1 || enemy_champion > 4);
 
+
+    /* ========================================= */
+    /* BATTLE START */
+    /* ========================================= */
+
     printf("\n");
     printf("==============================================\n");
     printf("                 BATTLE START                 \n");
@@ -142,8 +149,9 @@ void fight(int campeao)
 
     printf("\n");
 
+
     /* ========================================= */
-    /* STATUS DO JOGADOR */
+    /* PLAYER STATS */
     /* ========================================= */
 
     printf("Your champion: ");
@@ -157,8 +165,6 @@ void fight(int campeao)
             player_defense = 10;
             damage = 20;
             ability_damage = 40;
-
-            /* SESSÃO 7 - CRÍTICO */
             critical_chance = 20;
 
             break;
@@ -170,8 +176,6 @@ void fight(int campeao)
             player_defense = 15;
             damage = 15;
             ability_damage = 35;
-
-            /* SESSÃO 7 - CRÍTICO */
             critical_chance = 15;
 
             break;
@@ -183,8 +187,6 @@ void fight(int campeao)
             player_defense = 8;
             damage = 25;
             ability_damage = 45;
-
-            /* SESSÃO 7 - CRÍTICO */
             critical_chance = 25;
 
             break;
@@ -196,15 +198,14 @@ void fight(int campeao)
             player_defense = 5;
             damage = 10;
             ability_damage = 30;
-
-            /* SESSÃO 7 - CRÍTICO */
             critical_chance = 30;
 
             break;
     }
 
+
     /* ========================================= */
-    /* STATUS DO INIMIGO */
+    /* ENEMY STATS */
     /* ========================================= */
 
     switch (enemy_champion)
@@ -214,7 +215,6 @@ void fight(int campeao)
             enemy_defense = 5;
             enemy_damage = 15;
             enemy_ability_special = 35;
-
             break;
 
         case 2:
@@ -222,7 +222,6 @@ void fight(int campeao)
             enemy_defense = 10;
             enemy_damage = 18;
             enemy_ability_special = 40;
-
             break;
 
         case 3:
@@ -230,7 +229,6 @@ void fight(int campeao)
             enemy_defense = 15;
             enemy_damage = 20;
             enemy_ability_special = 45;
-
             break;
 
         case 4:
@@ -238,18 +236,23 @@ void fight(int campeao)
             enemy_defense = 8;
             enemy_damage = 25;
             enemy_ability_special = 50;
-
             break;
     }
 
+
     /* ========================================= */
-    /* COOLDOWN */
+    /* INITIAL VALUES */
     /* ========================================= */
 
     ability_cooldown = 0;
 
+    /* SESSÃO 8 */
+    enemy_stunned = 0;
+    enemy_marked = 0;
+
+
     /* ========================================= */
-    /* MOSTRAR INIMIGO */
+    /* SHOW ENEMY */
     /* ========================================= */
 
     printf("Enemy champion: ");
@@ -275,8 +278,9 @@ void fight(int campeao)
 
     printf("\n==============================================\n");
 
+
     /* ========================================= */
-    /* COMBATE */
+    /* COMBAT */
     /* ========================================= */
 
     while (player_health > 0 && enemy_health > 0)
@@ -295,7 +299,8 @@ void fight(int campeao)
         }
         else
         {
-            printf("Special Ability: %d turns remaining\n", ability_cooldown);
+            printf("Special Ability: %d turns remaining\n",
+                   ability_cooldown);
         }
 
         printf("\n");
@@ -309,25 +314,17 @@ void fight(int campeao)
         printf("Choose an action: ");
         scanf("%d", &action);
 
+
         switch (action)
         {
+
             /* ========================================= */
-            /* ATAQUE NORMAL */
+            /* NORMAL ATTACK */
             /* ========================================= */
 
             case 1:
 
-                /* ========================================= */
-                /* SESSÃO 7 - SISTEMA DE CRÍTICO */
-                /* ========================================= */
-
                 critical_damage = damage;
-
-                /*
-                   rand() % 100 gera um número entre 0 e 99.
-                   Se for menor que critical_chance,
-                   acontece um crítico.
-                */
 
                 if (rand() % 100 < critical_chance)
                 {
@@ -338,6 +335,17 @@ void fight(int campeao)
                     if (actual_damage < 1)
                     {
                         actual_damage = 1;
+                    }
+
+                    /* SESSÃO 8 - NIDALEE MARK */
+
+                    if (enemy_marked == 1)
+                    {
+                        actual_damage = actual_damage + 15;
+
+                        printf("\nMarked target! Bonus damage: +15!\n");
+
+                        enemy_marked = 0;
                     }
 
                     enemy_health = enemy_health - actual_damage;
@@ -355,15 +363,23 @@ void fight(int campeao)
                         actual_damage = 1;
                     }
 
+                    /* SESSÃO 8 - NIDALEE MARK */
+
+                    if (enemy_marked == 1)
+                    {
+                        actual_damage = actual_damage + 15;
+
+                        printf("\nMarked target! Bonus damage: +15!\n");
+
+                        enemy_marked = 0;
+                    }
+
                     enemy_health = enemy_health - actual_damage;
 
                     printf("\nYou attacked the enemy!\n");
                     printf("You dealt %d damage!\n", actual_damage);
                 }
 
-                /* ========================================= */
-                /* VERIFICAR VITÓRIA */
-                /* ========================================= */
 
                 if (enemy_health <= 0)
                 {
@@ -376,63 +392,78 @@ void fight(int campeao)
                     break;
                 }
 
+
                 /* ========================================= */
-                /* TURNO DO INIMIGO */
+                /* ENEMY TURN */
                 /* ========================================= */
 
-                enemy_action = rand() % 2 + 1;
-
-                if (enemy_action == 1)
+                if (enemy_stunned == 1)
                 {
-                    actual_damage = enemy_damage - player_defense;
+                    printf("\nThe enemy is stunned!\n");
+                    printf("The enemy cannot attack this turn!\n");
 
-                    if (actual_damage < 1)
-                    {
-                        actual_damage = 1;
-                    }
-
-                    player_health = player_health - actual_damage;
-
-                    printf("\nThe enemy attacked you!\n");
-                    printf("You received %d damage!\n", actual_damage);
+                    enemy_stunned = 0;
                 }
                 else
                 {
-                    actual_damage = enemy_ability_special - player_defense;
+                    enemy_action = rand() % 2 + 1;
 
-                    if (actual_damage < 1)
+                    if (enemy_action == 1)
                     {
-                        actual_damage = 1;
+                        actual_damage = enemy_damage - player_defense;
+
+                        if (actual_damage < 1)
+                        {
+                            actual_damage = 1;
+                        }
+
+                        player_health = player_health - actual_damage;
+
+                        printf("\nThe enemy attacked you!\n");
+                        printf("You received %d damage!\n",
+                               actual_damage);
                     }
-
-                    player_health = player_health - actual_damage;
-
-                    switch (enemy_champion)
+                    else
                     {
-                        case 1:
-                            printf("\nJinx used Super Mega Death Rocket!\n");
-                            break;
+                        actual_damage = enemy_ability_special -
+                                         player_defense;
 
-                        case 2:
-                            printf("\nSylas used Hijack!\n");
-                            break;
+                        if (actual_damage < 1)
+                        {
+                            actual_damage = 1;
+                        }
 
-                        case 3:
-                            printf("\nSwain used Demonic Ascension!\n");
-                            break;
+                        player_health = player_health - actual_damage;
 
-                        case 4:
-                            printf("\nRengar used Thrill of the Hunt!\n");
-                            break;
+                        switch (enemy_champion)
+                        {
+                            case 1:
+                                printf("\nJinx used Super Mega Death Rocket!\n");
+                                break;
+
+                            case 2:
+                                printf("\nSylas used Hijack!\n");
+                                break;
+
+                            case 3:
+                                printf("\nSwain used Demonic Ascension!\n");
+                                break;
+
+                            case 4:
+                                printf("\nRengar used Thrill of the Hunt!\n");
+                                break;
+                        }
+
+                        printf("You received %d damage!\n",
+                               actual_damage);
                     }
-
-                    printf("You received %d damage!\n", actual_damage);
                 }
 
                 break;
 
+
             /* ========================================= */
-            /* HABILIDADE ESPECIAL */
+            /* SPECIAL ABILITY */
             /* ========================================= */
 
             case 2:
@@ -440,10 +471,12 @@ void fight(int campeao)
                 if (ability_cooldown > 0)
                 {
                     printf("\nSpecial Ability is on cooldown!\n");
-                    printf("%d turns remaining.\n", ability_cooldown);
+                    printf("%d turns remaining.\n",
+                           ability_cooldown);
 
                     break;
                 }
+
 
                 actual_damage = ability_damage - enemy_defense;
 
@@ -452,30 +485,71 @@ void fight(int campeao)
                     actual_damage = 1;
                 }
 
-                enemy_health = enemy_health - actual_damage;
+
+                /* ========================================= */
+                /* SESSÃO 8 - EFEITOS */
+                /* ========================================= */
 
                 switch (campeao)
                 {
                     case 1:
+
                         printf("\nVi used Assault and Battery!\n");
+
+                        enemy_stunned = 1;
+
+                        printf("The enemy is stunned!\n");
+
                         break;
+
 
                     case 2:
+
                         printf("\nJarvan IV used Cataclysm!\n");
+
+                        enemy_defense = enemy_defense - 10;
+
+                        if (enemy_defense < 0)
+                        {
+                            enemy_defense = 0;
+                        }
+
+                        printf("Enemy defense was reduced by 10!\n");
+
                         break;
+
 
                     case 3:
+
                         printf("\nLee Sin used Dragon's Rage!\n");
+
+                        actual_damage = actual_damage + 10;
+
+                        printf("Knockback damage: +10!\n");
+
                         break;
 
+
                     case 4:
+
                         printf("\nNidalee used Javelin Toss!\n");
+
+                        enemy_marked = 1;
+
+                        printf("The enemy is marked!\n");
+
                         break;
                 }
 
-                printf("You dealt %d damage!\n", actual_damage);
+
+                enemy_health = enemy_health - actual_damage;
+
+                printf("You dealt %d damage!\n",
+                       actual_damage);
+
 
                 ability_cooldown = 3;
+
 
                 if (enemy_health <= 0)
                 {
@@ -488,63 +562,81 @@ void fight(int campeao)
                     break;
                 }
 
+
                 /* ========================================= */
-                /* TURNO DO INIMIGO */
+                /* ENEMY TURN */
                 /* ========================================= */
 
-                enemy_action = rand() % 2 + 1;
-
-                if (enemy_action == 1)
+                if (enemy_stunned == 1)
                 {
-                    actual_damage = enemy_damage - player_defense;
+                    printf("\nThe enemy is stunned!\n");
+                    printf("The enemy cannot attack this turn!\n");
 
-                    if (actual_damage < 1)
-                    {
-                        actual_damage = 1;
-                    }
-
-                    player_health = player_health - actual_damage;
-
-                    printf("\nThe enemy attacked you!\n");
-                    printf("You received %d damage!\n", actual_damage);
+                    enemy_stunned = 0;
                 }
                 else
                 {
-                    actual_damage = enemy_ability_special - player_defense;
+                    enemy_action = rand() % 2 + 1;
 
-                    if (actual_damage < 1)
+                    if (enemy_action == 1)
                     {
-                        actual_damage = 1;
+                        actual_damage = enemy_damage -
+                                         player_defense;
+
+                        if (actual_damage < 1)
+                        {
+                            actual_damage = 1;
+                        }
+
+                        player_health = player_health -
+                                        actual_damage;
+
+                        printf("\nThe enemy attacked you!\n");
+                        printf("You received %d damage!\n",
+                               actual_damage);
                     }
-
-                    player_health = player_health - actual_damage;
-
-                    switch (enemy_champion)
+                    else
                     {
-                        case 1:
-                            printf("\nJinx used Super Mega Death Rocket!\n");
-                            break;
+                        actual_damage = enemy_ability_special -
+                                         player_defense;
 
-                        case 2:
-                            printf("\nSylas used Hijack!\n");
-                            break;
+                        if (actual_damage < 1)
+                        {
+                            actual_damage = 1;
+                        }
 
-                        case 3:
-                            printf("\nSwain used Demonic Ascension!\n");
-                            break;
+                        player_health = player_health -
+                                        actual_damage;
 
-                        case 4:
-                            printf("\nRengar used Thrill of the Hunt!\n");
-                            break;
+                        switch (enemy_champion)
+                        {
+                            case 1:
+                                printf("\nJinx used Super Mega Death Rocket!\n");
+                                break;
+
+                            case 2:
+                                printf("\nSylas used Hijack!\n");
+                                break;
+
+                            case 3:
+                                printf("\nSwain used Demonic Ascension!\n");
+                                break;
+
+                            case 4:
+                                printf("\nRengar used Thrill of the Hunt!\n");
+                                break;
+                        }
+
+                        printf("You received %d damage!\n",
+                               actual_damage);
                     }
-
-                    printf("You received %d damage!\n", actual_damage);
                 }
 
                 break;
 
+
             /* ========================================= */
-            /* FUGIR */
+            /* RUN */
             /* ========================================= */
 
             case 3:
@@ -553,9 +645,6 @@ void fight(int campeao)
 
                 return;
 
-            /* ========================================= */
-            /* OPÇÃO INVÁLIDA */
-            /* ========================================= */
 
             default:
 
@@ -564,8 +653,9 @@ void fight(int campeao)
                 break;
         }
 
+
         /* ========================================= */
-        /* DIMINUIR COOLDOWN */
+        /* COOLDOWN */
         /* ========================================= */
 
         if (ability_cooldown > 0)
@@ -574,8 +664,9 @@ void fight(int campeao)
         }
     }
 
+
     /* ========================================= */
-    /* DERROTA */
+    /* DEFEAT */
     /* ========================================= */
 
     if (player_health <= 0)
@@ -587,6 +678,7 @@ void fight(int campeao)
         printf("You were defeated!\n");
     }
 }
+
 
 int main()
 {
