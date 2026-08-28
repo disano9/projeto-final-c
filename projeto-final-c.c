@@ -86,13 +86,29 @@ void fight(int campeao)
     int enemy_health = 100;
     int enemy_champion;
     int action;
+    int damage;
+    int ability_damage;
+    int enemy_damage;
+    int enemy_ability_special;
+    int enemy_action;
 
-    enemy_champion = rand() % 4 + 1;
+   printf("\nChoose your enemy:\n");
+    printf("1 - Jinx\n");
+    printf("2 - Sylas\n");
+    printf("3 - Swain\n");
+    printf("4 - Rengar\n");
 
-    while (enemy_champion == campeao)
+    do
     {
-        enemy_champion = rand() % 4 + 1;
+    printf("\nChoose enemy champion: ");
+    scanf("%d", &enemy_champion);
+
+    if (enemy_champion < 1 || enemy_champion > 4)
+    {
+        printf("Invalid enemy! Choose a number between 1 and 4.\n");
     }
+
+} while (enemy_champion < 1 || enemy_champion > 4);
 
     printf("\n");
     printf("==============================================\n");
@@ -102,44 +118,91 @@ void fight(int campeao)
     printf("\n");
 
     printf("Your champion: ");
-
+    
     switch (campeao)
     {
         case 1:
             printf("Vi\n");
+            damage = 20;
             break;
 
         case 2:
             printf("Jarvan IV\n");
+            damage = 15;
             break;
 
         case 3:
             printf("Lee Sin\n");
+            damage = 25;
             break;
 
         case 4:
             printf("Nidalee\n");
+            damage = 10;
             break;
-    }
+    }   
+    
+    switch (enemy_champion)
+{
+    case 1:
+        enemy_damage = 15;
+        enemy_ability_special = 30;
+        break;
+
+    case 2:
+        enemy_damage = 18;
+        enemy_ability_special = 35;
+        break;
+
+    case 3:
+        enemy_damage = 20;
+        enemy_ability_special = 40;
+        break;
+
+    case 4:
+        enemy_damage = 25;
+        enemy_ability_special = 45;
+        break;
+}
+    switch (campeao)
+{
+    case 1:
+        ability_damage = 35;
+        break;
+
+    case 2:
+        ability_damage = 30;
+        break;
+
+    case 3:
+        ability_damage = 40;
+        break;
+
+    case 4:
+        ability_damage = 25;
+        break;
+}
 
     printf("Enemy champion: ");
+    
+
 
     switch (enemy_champion)
     {
         case 1:
-            printf("Vi\n");
+            printf("Jinx\n");
             break;
 
         case 2:
-            printf("Jarvan IV\n");
+            printf("Sylas\n");
             break;
 
         case 3:
-            printf("Lee Sin\n");
+            printf("Swain\n");
             break;
 
         case 4:
-            printf("Nidalee\n");
+            printf("Rengar\n");
             break;
     }
 
@@ -153,7 +216,8 @@ void fight(int campeao)
         printf("\n");
         printf("----------------------------------------------\n");
         printf("[1] Attack\n");
-        printf("[2] Run\n");
+        printf("[2] Special Ability\n");
+        printf("[3] Run\n");
         printf("----------------------------------------------\n");
 
         printf("Choose an action: ");
@@ -162,10 +226,10 @@ void fight(int campeao)
         switch (action)
         {
             case 1:
-                enemy_health = enemy_health - 20;
+                enemy_health = enemy_health - damage;
 
                 printf("\nYou attacked the enemy!\n");
-                printf("You dealt 20 damage!\n");
+                printf("You dealt %d damage!\n",damage);
 
                 if (enemy_health <= 0)
                 {
@@ -175,14 +239,111 @@ void fight(int campeao)
                     printf("You defeated the enemy!\n");
                     break;
                 }
+                enemy_action = rand() % 2 + 1;
 
-                player_health = player_health - 15;
+            if (enemy_action == 1)
+               {
+                 player_health = player_health - enemy_damage;
 
                 printf("\nThe enemy attacked you!\n");
-                printf("You received 15 damage!\n");
-                break;
+                printf("You received %d damage!\n", enemy_damage);
+               }
+            else
+               {
+                player_health = player_health - enemy_ability_special;
 
-            case 2:
+        switch (enemy_champion)
+        {
+          case 1:
+            printf("\nJinx used Super Mega Death Rocket!\n");
+            break;
+
+         case 2:
+            printf("\nSylas used Hijack!\n");
+            break;
+
+         case 3:
+            printf("\nSwain used Demonic Ascension!\n");
+            break;
+
+         case 4:
+            printf("\nRengar used Thrill of the Hunt!\n");
+            break;
+        }
+
+         printf("You received %d damage!\n", enemy_ability_special);
+        }
+            case 2: 
+            enemy_health = enemy_health - ability_damage;
+            
+            switch(campeao)
+            {
+            case 1 :
+                printf("\nVi used Assault and Battery!\n");
+                break;
+            
+            case 2 :
+                printf("\nJarvan IV used Cataclysm!\n");
+                break;
+            
+            case 3 : 
+                printf("\nLee Sin used Dragon's Rage!\n");
+                break;
+            
+            case 4 :
+                printf("\nNidalee used Javelin Toss!\n");
+                break;
+            }
+            
+        printf("You dealt %d damage!\n", ability_damage);
+
+            if (enemy_health <= 0)
+    {
+        printf("\n==============================================\n");
+        printf("                  VICTORY!                   \n");
+        printf("==============================================\n");
+        printf("You defeated the enemy!\n");
+        break;
+    }
+
+    enemy_action = rand() % 2 + 1;
+
+if (enemy_action == 1)
+{
+    player_health = player_health - enemy_damage;
+
+    printf("\nThe enemy attacked you!\n");
+    printf("You received %d damage!\n", enemy_damage);
+}
+else
+{
+    player_health = player_health - enemy_ability_special;
+
+    switch (enemy_champion)
+    {
+        case 1:
+            printf("\nJinx used Super Mega Death Rocket!\n");
+            break;
+
+        case 2:
+            printf("\nSylas used Hijack!\n");
+            break;
+
+        case 3:
+            printf("\nSwain used Demonic Ascension!\n");
+            break;
+
+        case 4:
+            printf("\nRengar used Thrill of the Hunt!\n");
+            break;
+    }
+
+    printf("You received %d damage!\n", enemy_ability_special);
+}
+
+    break;
+
+            case 3:
                 printf("\nYou ran away from the battle!\n");
                 return;
 

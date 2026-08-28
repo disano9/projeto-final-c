@@ -24,3 +24,15 @@
 - Implementação das opções de ataque e defesa.
 - Utilização de `if` para verificar as condições do combate.
 - Adição do `return 0` no final do programa.
+
+## Sessão 4
+
+- Adição de atributos de dano diferentes para cada campeão.
+- Adição de habilidades especiais para os campeões.
+- Adição dos nomes das habilidades especiais.
+- Criação de campeões exclusivos para os inimigos.
+- Implementação da escolha manual do campeão inimigo.
+- Adição de ataques e habilidades especiais para os inimigos.
+- Implementação de ações aleatórias dos inimigos durante o combate.
+- Correção da apresentação das opções de escolha do inimigo.
+- Teste e correção do sistema de combate.
