@@ -104,8 +104,12 @@ void fight(int campeao)
 
     int actual_damage;
 
+    int ability_cooldown;
+
+    /* ========================================= */
     /* ESCOLHER INIMIGO */
-    
+    /* ========================================= */
+
     printf("\nChoose your enemy:\n");
     printf("1 - Jinx\n");
     printf("2 - Sylas\n");
@@ -124,16 +128,20 @@ void fight(int campeao)
 
     } while (enemy_champion < 1 || enemy_champion > 4);
 
+    /* ========================================= */
     /* INICIO DA BATALHA */
- 
+    /* ========================================= */
+
     printf("\n");
     printf("==============================================\n");
-    printf("                 BATTLE START                \n");
+    printf("                 BATTLE START                 \n");
     printf("==============================================\n");
 
     printf("\n");
 
+    /* ========================================= */
     /* STATUS DO JOGADOR */
+    /* ========================================= */
 
     printf("Your champion: ");
 
@@ -145,6 +153,7 @@ void fight(int campeao)
             player_health = 120;
             player_defense = 10;
             damage = 20;
+            ability_damage = 40;
 
             break;
 
@@ -154,6 +163,7 @@ void fight(int campeao)
             player_health = 140;
             player_defense = 15;
             damage = 15;
+            ability_damage = 35;
 
             break;
 
@@ -163,6 +173,7 @@ void fight(int campeao)
             player_health = 100;
             player_defense = 8;
             damage = 25;
+            ability_damage = 45;
 
             break;
 
@@ -172,11 +183,14 @@ void fight(int campeao)
             player_health = 90;
             player_defense = 5;
             damage = 10;
+            ability_damage = 30;
 
             break;
     }
 
+    /* ========================================= */
     /* STATUS DO INIMIGO */
+    /* ========================================= */
 
     switch (enemy_champion)
     {
@@ -213,29 +227,15 @@ void fight(int campeao)
             break;
     }
 
-    /* DANO DA HABILIDADE DO JOGADOR */
+    /* ========================================= */
+    /* COOLDOWN INICIAL */
+    /* ========================================= */
 
-    switch (campeao)
-    {
-        case 1:
-            ability_damage = 40;
-            break;
+    ability_cooldown = 0;
 
-        case 2:
-            ability_damage = 35;
-            break;
-
-        case 3:
-            ability_damage = 45;
-            break;
-
-        case 4:
-            ability_damage = 30;
-            break;
-    }
-
+    /* ========================================= */
     /* MOSTRAR INIMIGO */
-
+    /* ========================================= */
     printf("Enemy champion: ");
 
     switch (enemy_champion)
@@ -259,8 +259,10 @@ void fight(int campeao)
 
     printf("\n==============================================\n");
 
+    /* ========================================= */
     /* COMBATE */
-  
+    /* ========================================= */
+
     while (player_health > 0 && enemy_health > 0)
     {
         printf("\nYour HP: %d\n", player_health);
@@ -268,6 +270,17 @@ void fight(int campeao)
 
         printf("\nEnemy HP: %d\n", enemy_health);
         printf("Enemy Defense: %d\n", enemy_defense);
+
+        printf("\n");
+
+        if (ability_cooldown == 0)
+        {
+            printf("Special Ability: READY\n");
+        }
+        else
+        {
+            printf("Special Ability: %d turns remaining\n", ability_cooldown);
+        }
 
         printf("\n");
 
@@ -280,7 +293,9 @@ void fight(int campeao)
         printf("Choose an action: ");
         scanf("%d", &action);
 
+        /* ========================================= */
         /* ATAQUE NORMAL */
+        /* ========================================= */
 
         switch (action)
         {
@@ -298,8 +313,6 @@ void fight(int campeao)
                 printf("\nYou attacked the enemy!\n");
                 printf("You dealt %d damage!\n", actual_damage);
 
-                /* VERIFICAR SE O INIMIGO MORREU */
-
                 if (enemy_health <= 0)
                 {
                     printf("\n==============================================\n");
@@ -311,11 +324,11 @@ void fight(int campeao)
                     break;
                 }
 
+                /* ========================================= */
                 /* TURNO DO INIMIGO */
+                /* ========================================= */
 
                 enemy_action = rand() % 2 + 1;
-
-                /* ATAQUE NORMAL DO INIMIGO */
 
                 if (enemy_action == 1)
                 {
@@ -331,9 +344,6 @@ void fight(int campeao)
                     printf("\nThe enemy attacked you!\n");
                     printf("You received %d damage!\n", actual_damage);
                 }
-
-                /* HABILIDADE DO INIMIGO */
-
                 else
                 {
                     actual_damage = enemy_ability_special - player_defense;
@@ -344,7 +354,6 @@ void fight(int campeao)
                     }
 
                     player_health = player_health - actual_damage;
-
 
                     switch (enemy_champion)
                     {
@@ -370,9 +379,20 @@ void fight(int campeao)
 
                 break;
 
-            /* HABILIDADE ESPECIAL DO JOGADOR */
+            /* ========================================= */
+            /* HABILIDADE ESPECIAL */
+            /* ========================================= */
 
             case 2:
+
+                if (ability_cooldown > 0)
+                {
+                    printf("\nSpecial Ability is on cooldown!\n");
+                    printf("%d turns remaining.\n", ability_cooldown);
+
+                    break;
+                }
+
 
                 actual_damage = ability_damage - enemy_defense;
 
@@ -382,7 +402,6 @@ void fight(int campeao)
                 }
 
                 enemy_health = enemy_health - actual_damage;
-
 
                 switch (campeao)
                 {
@@ -405,8 +424,9 @@ void fight(int campeao)
 
                 printf("You dealt %d damage!\n", actual_damage);
 
+                /* ATIVAR COOLDOWN */
 
-                /* VERIFICAR SE O INIMIGO MORREU */
+                ability_cooldown = 3;
 
                 if (enemy_health <= 0)
                 {
@@ -418,8 +438,10 @@ void fight(int campeao)
 
                     break;
                 }
-                /* TURNO DO INIMIGO */
 
+                /* ========================================= */
+                /* TURNO DO INIMIGO */
+                /* ========================================= */
                 enemy_action = rand() % 2 + 1;
 
 
@@ -437,8 +459,6 @@ void fight(int campeao)
                     printf("\nThe enemy attacked you!\n");
                     printf("You received %d damage!\n", actual_damage);
                 }
-
-
                 else
                 {
                     actual_damage = enemy_ability_special - player_defense;
@@ -475,15 +495,18 @@ void fight(int campeao)
 
                 break;
 
+            /* ========================================= */
             /* FUGIR */
-
+            /* ========================================= */
             case 3:
 
                 printf("\nYou ran away from the battle!\n");
 
                 return;
-        
+
+            /* ========================================= */
             /* OPÇÃO INVÁLIDA */
+            /* ========================================= */
 
             default:
 
@@ -491,8 +514,20 @@ void fight(int campeao)
 
                 break;
         }
+
+        /* ========================================= */
+        /* DIMINUIR COOLDOWN */
+        /* ========================================= */
+
+        if (ability_cooldown > 0)
+        {
+            ability_cooldown--;
+        }
     }
+
+    /* ========================================= */
     /* DERROTA */
+    /* ========================================= */
 
     if (player_health <= 0)
     {
@@ -504,13 +539,14 @@ void fight(int campeao)
     }
 }
 
-
 int main()
 {
     int escolha;
     int campeao;
 
-    srand(time(NULL));   
+    srand(time(NULL));
+
+
     do
     {
         mostrar_menu();

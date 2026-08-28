@@ -46,3 +46,11 @@
 - Balanceamento dos valores de HP, defesa e dano.
 - Aplicação da defesa aos ataques normais e habilidades especiais.
 - Teste do sistema de combate.
+
+## Sessão 6
+
+- Implementação do sistema de cooldown das habilidades especiais.
+- Adição do estado "READY" para indicar quando a habilidade está disponível.
+- Adição do número de turnos restantes do cooldown.
+- Impedimento da utilização da habilidade durante o cooldown.
+- Teste do sistema de cooldown durante o combate.
