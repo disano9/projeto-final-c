@@ -54,3 +54,13 @@
 - Adição do número de turnos restantes do cooldown.
 - Impedimento da utilização da habilidade durante o cooldown.
 - Teste do sistema de cooldown durante o combate.
+
+## Sessão 7
+
+- Implementação do sistema de ataques críticos.
+- Adição de uma probabilidade de crítico diferente para cada campeão.
+- Criação do cálculo de dano crítico.
+- O dano crítico é calculado antes da aplicação da defesa do inimigo.
+- Adição da mensagem "CRITICAL HIT!" durante o combate.
+- Utilização da função rand() para determinar aleatoriamente se um ataque é crítico.
+- Teste do sistema de críticos durante as batalhas.

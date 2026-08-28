@@ -107,6 +107,13 @@ void fight(int campeao)
     int ability_cooldown;
 
     /* ========================================= */
+    /* SESSÃO 7 - CRÍTICO */
+    /* ========================================= */
+
+    int critical_chance;
+    int critical_damage;
+
+    /* ========================================= */
     /* ESCOLHER INIMIGO */
     /* ========================================= */
 
@@ -127,10 +134,6 @@ void fight(int campeao)
         }
 
     } while (enemy_champion < 1 || enemy_champion > 4);
-
-    /* ========================================= */
-    /* INICIO DA BATALHA */
-    /* ========================================= */
 
     printf("\n");
     printf("==============================================\n");
@@ -155,6 +158,9 @@ void fight(int campeao)
             damage = 20;
             ability_damage = 40;
 
+            /* SESSÃO 7 - CRÍTICO */
+            critical_chance = 20;
+
             break;
 
         case 2:
@@ -164,6 +170,9 @@ void fight(int campeao)
             player_defense = 15;
             damage = 15;
             ability_damage = 35;
+
+            /* SESSÃO 7 - CRÍTICO */
+            critical_chance = 15;
 
             break;
 
@@ -175,6 +184,9 @@ void fight(int campeao)
             damage = 25;
             ability_damage = 45;
 
+            /* SESSÃO 7 - CRÍTICO */
+            critical_chance = 25;
+
             break;
 
         case 4:
@@ -184,6 +196,9 @@ void fight(int campeao)
             player_defense = 5;
             damage = 10;
             ability_damage = 30;
+
+            /* SESSÃO 7 - CRÍTICO */
+            critical_chance = 30;
 
             break;
     }
@@ -228,7 +243,7 @@ void fight(int campeao)
     }
 
     /* ========================================= */
-    /* COOLDOWN INICIAL */
+    /* COOLDOWN */
     /* ========================================= */
 
     ability_cooldown = 0;
@@ -236,6 +251,7 @@ void fight(int campeao)
     /* ========================================= */
     /* MOSTRAR INIMIGO */
     /* ========================================= */
+
     printf("Enemy champion: ");
 
     switch (enemy_champion)
@@ -293,25 +309,61 @@ void fight(int campeao)
         printf("Choose an action: ");
         scanf("%d", &action);
 
-        /* ========================================= */
-        /* ATAQUE NORMAL */
-        /* ========================================= */
-
         switch (action)
         {
+            /* ========================================= */
+            /* ATAQUE NORMAL */
+            /* ========================================= */
+
             case 1:
 
-                actual_damage = damage - enemy_defense;
+                /* ========================================= */
+                /* SESSÃO 7 - SISTEMA DE CRÍTICO */
+                /* ========================================= */
 
-                if (actual_damage < 1)
+                critical_damage = damage;
+
+                /*
+                   rand() % 100 gera um número entre 0 e 99.
+                   Se for menor que critical_chance,
+                   acontece um crítico.
+                */
+
+                if (rand() % 100 < critical_chance)
                 {
-                    actual_damage = 1;
+                    critical_damage = damage * 2;
+
+                    actual_damage = critical_damage - enemy_defense;
+
+                    if (actual_damage < 1)
+                    {
+                        actual_damage = 1;
+                    }
+
+                    enemy_health = enemy_health - actual_damage;
+
+                    printf("\nYou attacked the enemy!\n");
+                    printf("CRITICAL HIT!\n");
+                    printf("You dealt %d damage!\n", actual_damage);
+                }
+                else
+                {
+                    actual_damage = damage - enemy_defense;
+
+                    if (actual_damage < 1)
+                    {
+                        actual_damage = 1;
+                    }
+
+                    enemy_health = enemy_health - actual_damage;
+
+                    printf("\nYou attacked the enemy!\n");
+                    printf("You dealt %d damage!\n", actual_damage);
                 }
 
-                enemy_health = enemy_health - actual_damage;
-
-                printf("\nYou attacked the enemy!\n");
-                printf("You dealt %d damage!\n", actual_damage);
+                /* ========================================= */
+                /* VERIFICAR VITÓRIA */
+                /* ========================================= */
 
                 if (enemy_health <= 0)
                 {
@@ -393,7 +445,6 @@ void fight(int campeao)
                     break;
                 }
 
-
                 actual_damage = ability_damage - enemy_defense;
 
                 if (actual_damage < 1)
@@ -424,8 +475,6 @@ void fight(int campeao)
 
                 printf("You dealt %d damage!\n", actual_damage);
 
-                /* ATIVAR COOLDOWN */
-
                 ability_cooldown = 3;
 
                 if (enemy_health <= 0)
@@ -442,8 +491,8 @@ void fight(int campeao)
                 /* ========================================= */
                 /* TURNO DO INIMIGO */
                 /* ========================================= */
-                enemy_action = rand() % 2 + 1;
 
+                enemy_action = rand() % 2 + 1;
 
                 if (enemy_action == 1)
                 {
@@ -469,7 +518,6 @@ void fight(int campeao)
                     }
 
                     player_health = player_health - actual_damage;
-
 
                     switch (enemy_champion)
                     {
@@ -498,6 +546,7 @@ void fight(int campeao)
             /* ========================================= */
             /* FUGIR */
             /* ========================================= */
+
             case 3:
 
                 printf("\nYou ran away from the battle!\n");
@@ -546,14 +595,12 @@ int main()
 
     srand(time(NULL));
 
-
     do
     {
         mostrar_menu();
 
         printf("\nChoose an option: ");
         scanf("%d", &escolha);
-
 
         switch (escolha)
         {
@@ -565,20 +612,17 @@ int main()
 
                 break;
 
-
             case 2:
 
                 mostrar_campeoes();
 
                 break;
 
-
             case 3:
 
                 printf("\nExiting the game...\n");
 
                 break;
-
 
             default:
 
@@ -588,7 +632,6 @@ int main()
         }
 
     } while (escolha != 3);
-
 
     return 0;
 }
