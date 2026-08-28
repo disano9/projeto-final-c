@@ -36,3 +36,13 @@
 - Implementação de ações aleatórias dos inimigos durante o combate.
 - Correção da apresentação das opções de escolha do inimigo.
 - Teste e correção do sistema de combate.
+
+## Sessão 5
+
+- Adição de HP diferente para cada campeão.
+- Adição de defesa diferente para cada campeão.
+- Implementação da redução de dano através da defesa.
+- Criação do cálculo de dano real durante o combate.
+- Balanceamento dos valores de HP, defesa e dano.
+- Aplicação da defesa aos ataques normais e habilidades especiais.
+- Teste do sistema de combate.
